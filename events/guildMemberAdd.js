@@ -9,7 +9,8 @@ const {
 const picked = {};
 
 module.exports = async (client, member) => {
-  const channel = member.guild.channels.cache.get(client.config.channels.greet);
+  if (!client.config.servers[member.guild.id]) return;
+  const channel = member.guild.channels.cache.get(client.config.servers[member.guild.id].channels.greet);
   if (!channel) return;
 
   const greeterMessages = [
@@ -220,7 +221,7 @@ module.exports = async (client, member) => {
    * @returns {string} The welcome message content
    */
   function buildGreetMessageContent(applicant) {
-    return `${roleMention(client.config.roles.greeter)}, ${pickGreeterMessage(
+    return `${roleMention(client.config.servers[member.guild.id].roles.greeter)}, ${pickGreeterMessage(
       userMention(applicant.id)
     )}`;
   }
@@ -245,9 +246,9 @@ module.exports = async (client, member) => {
           )}\n${italic(
             "Why don't you check out some of the channels below to get started?"
           )}\n\n<id:customize> - Assign some Roles!\n${channelMention(
-            client.config.channels.introduce
+            client.config.servers[member.guild.id].channels.introduce
           )} - Introduce Yourself!\n${channelMention(
-            client.config.channels.general
+            client.config.servers[member.guild.id].channels.general
           )} - Start Chatting!`
         )
         .setImage(pickImageUrl())
